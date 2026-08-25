@@ -1,0 +1,1885 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.11.0",
+  "app_id": "logicgate-connector",
+  "version": "0.1.0",
+  "name": "LogicGate",
+  "description": "Connect your own LogicGate (Risk Cloud) account (static API Token) to discover your configured Applications (Risk Register, Vendor Assessments, Incident Management, etc.), browse and manage Records inside each, and get a lightweight risk posture overview.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "logicgate:read",
+    "logicgate:write"
+  ],
+  "tools": [
+    {
+      "name": "connect_logicgate",
+      "description": "Connect a LogicGate (Risk Cloud) account via a static API Token, after verifying connectivity.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "logicgate.provider.connected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "label": {
+            "default": "",
+            "description": "Friendly account label, e.g. 'Acme Corp — Production'.",
+            "title": "Label",
+            "type": "string"
+          },
+          "api_token": {
+            "description": "LogicGate API Token, from Admin > API Tokens.",
+            "title": "Api Token",
+            "type": "string"
+          },
+          "base_url": {
+            "default": "",
+            "description": "Optional API base URL override. Defaults to https://api.logicgate.com.",
+            "title": "Base Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "api_token"
+        ],
+        "title": "ConnectLogicGateParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connection_id": {
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "base_url": {
+            "title": "Base Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "connection_id",
+          "label",
+          "base_url"
+        ],
+        "title": "LogicGateConnection",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.connect_logicgate",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "disconnect_logicgate",
+      "description": "Disconnect a LogicGate account: deletes only the saved credentials. Nothing in LogicGate itself is changed.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "logicgate.provider.disconnected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "description": "Saved LogicGate account connection ID to remove from Imperal.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_id"
+        ],
+        "title": "DisconnectLogicGateParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "deleted": {
+            "title": "Deleted",
+            "type": "boolean"
+          },
+          "connection_id": {
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "deleted",
+          "connection_id"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.disconnect_logicgate",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "list_connections",
+      "description": "List the connected LogicGate accounts.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "LogicGateConnection": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "connection_id": {
+                "title": "Connection Id",
+                "type": "string"
+              },
+              "label": {
+                "title": "Label",
+                "type": "string"
+              },
+              "base_url": {
+                "title": "Base Url",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "connection_id",
+              "label",
+              "base_url"
+            ],
+            "title": "LogicGateConnection",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connections": {
+            "items": {
+              "$ref": "#/$defs/LogicGateConnection"
+            },
+            "title": "Connections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "connections"
+        ],
+        "title": "ConnectionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.list_connections",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "list_applications",
+      "description": "List Applications (customer-defined data models, e.g. Risk Register, Vendor Assessments) configured on the connected LogicGate account.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ListApplicationsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "LogicGateApplication": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "application_id": {
+                "title": "Application Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "application_id",
+              "name"
+            ],
+            "title": "LogicGateApplication",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "applications": {
+            "items": {
+              "$ref": "#/$defs/LogicGateApplication"
+            },
+            "title": "Applications",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "applications"
+        ],
+        "title": "ApplicationList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.list_applications",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "get_application",
+      "description": "Read one Application in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "application_id": {
+            "description": "LogicGate Application ID.",
+            "title": "Application Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "ApplicationIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "application_id",
+          "name"
+        ],
+        "title": "LogicGateApplication",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.get_application",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "list_fields",
+      "description": "List the Field schema (name, type, options) of one Application, before creating or updating Records in it.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "application_id": {
+            "description": "LogicGate Application ID to list Fields for.",
+            "title": "Application Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "ListFieldsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "LogicGateField": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "field_id": {
+                "title": "Field Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "field_type": {
+                "default": "",
+                "title": "Field Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "field_id",
+              "name"
+            ],
+            "title": "LogicGateField",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "fields": {
+            "items": {
+              "$ref": "#/$defs/LogicGateField"
+            },
+            "title": "Fields",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "fields"
+        ],
+        "title": "FieldList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.list_fields",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "list_records",
+      "description": "List Records inside one Application, optionally paginated.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "application_id": {
+            "description": "LogicGate Application ID to list Records from.",
+            "title": "Application Id",
+            "type": "string"
+          },
+          "page": {
+            "default": 1,
+            "description": "Page number, 1-based.",
+            "title": "Page",
+            "type": "integer"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max records to return per page (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "application_id"
+        ],
+        "title": "ListRecordsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "LogicGateRecord": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "record_id": {
+                "title": "Record Id",
+                "type": "string"
+              },
+              "application_id": {
+                "title": "Application Id",
+                "type": "string"
+              },
+              "name": {
+                "default": "",
+                "title": "Name",
+                "type": "string"
+              },
+              "stage": {
+                "default": "",
+                "title": "Stage",
+                "type": "string"
+              },
+              "field_values": {
+                "additionalProperties": true,
+                "default": {},
+                "title": "Field Values",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "record_id",
+              "application_id"
+            ],
+            "title": "LogicGateRecord",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/$defs/LogicGateRecord"
+            },
+            "title": "Records",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "records"
+        ],
+        "title": "RecordList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.list_records",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "get_record",
+      "description": "Read one Record in full, including all of its field values.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "application_id": {
+            "description": "LogicGate Application ID the record belongs to.",
+            "title": "Application Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "LogicGate Record ID.",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "application_id",
+          "record_id"
+        ],
+        "title": "RecordIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "record_id": {
+            "title": "Record Id",
+            "type": "string"
+          },
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "stage": {
+            "default": "",
+            "title": "Stage",
+            "type": "string"
+          },
+          "field_values": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Field Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "record_id",
+          "application_id"
+        ],
+        "title": "LogicGateRecord",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.get_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "create_record",
+      "description": "Create a new Record inside an Application, using exact field name/id keys from list_fields.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "logicgate.record.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "application_id": {
+            "description": "LogicGate Application ID to create the record in.",
+            "title": "Application Id",
+            "type": "string"
+          },
+          "field_values": {
+            "additionalProperties": true,
+            "description": "Map of field name/id to value, matching the Application's own Field schema (see list_fields).",
+            "title": "Field Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "application_id",
+          "field_values"
+        ],
+        "title": "CreateRecordParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "record_id": {
+            "title": "Record Id",
+            "type": "string"
+          },
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "stage": {
+            "default": "",
+            "title": "Stage",
+            "type": "string"
+          },
+          "field_values": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Field Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "record_id",
+          "application_id"
+        ],
+        "title": "LogicGateRecord",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.create_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "update_record",
+      "description": "Update selected field values of an existing Record. Only given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "logicgate.record.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "application_id": {
+            "description": "LogicGate Application ID the record belongs to.",
+            "title": "Application Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "LogicGate Record ID.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "field_values": {
+            "additionalProperties": true,
+            "description": "Map of field name/id to new value. Only given fields change.",
+            "title": "Field Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "application_id",
+          "record_id",
+          "field_values"
+        ],
+        "title": "UpdateRecordParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "record_id": {
+            "title": "Record Id",
+            "type": "string"
+          },
+          "application_id": {
+            "title": "Application Id",
+            "type": "string"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "stage": {
+            "default": "",
+            "title": "Stage",
+            "type": "string"
+          },
+          "field_values": {
+            "additionalProperties": true,
+            "default": {},
+            "title": "Field Values",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "record_id",
+          "application_id"
+        ],
+        "title": "LogicGateRecord",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.update_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    },
+    {
+      "name": "audit_risk_posture",
+      "description": "Build a lightweight risk posture overview: how many Applications are configured and a sample of their Record counts.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved LogicGate account connection ID. Omit to use the first connected account.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "AuditRiskPostureParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "application_count": {
+            "title": "Application Count",
+            "type": "integer"
+          },
+          "records_sampled": {
+            "title": "Records Sampled",
+            "type": "integer"
+          },
+          "applications_summary": {
+            "title": "Applications Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "application_count",
+          "records_sampled",
+          "applications_summary"
+        ],
+        "title": "RiskPostureAudit",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "logicgate-connector.audit_risk_posture",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "logicgate"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 637,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "logicgate_connections",
+      "description": "JSON list of connected LogicGate accounts and encrypted API Tokens. Managed only through connect_logicgate and disconnect_logicgate.",
+      "required": true,
+      "write_mode": "both",
+      "max_bytes": 65536,
+      "scope": "user",
+      "rotation_hint_days": 90
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "logicgate_sidebar",
+      "slot": "left",
+      "title": "LogicGate",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "logicgate_connect_help",
+      "slot": "center",
+      "title": "How do I get this?",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "logicgate_overview",
+      "slot": "center",
+      "title": "Risk posture overview",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "logicgate_applications",
+      "slot": "center",
+      "title": "Applications",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "logicgate_records",
+      "slot": "center",
+      "title": "Records",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "logicgate_settings",
+      "slot": "center",
+      "title": "LogicGate settings",
+      "tree": {},
+      "icon": "Settings",
+      "refresh": "manual",
+      "center_overlay": true
+    }
+  ]
+}
