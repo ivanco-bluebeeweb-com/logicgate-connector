@@ -45,9 +45,9 @@ async def logicgate_sidebar(ctx, **kwargs) -> ui.UINode:
     return ui.Stack(direction="v", gap=3, align="stretch", children=[
         ui.Text(label, variant="body"),
         ui.Divider(),
-        ui.Button("Applications", variant="ghost", full_width=True, align="left",
+        ui.Button("Applications", variant="ghost", full_width=True,
                   on_click=ui.Call("__panel__logicgate_applications")),
-        ui.Button("Risk posture overview", variant="ghost", full_width=True, align="left",
+        ui.Button("Risk posture overview", variant="ghost", full_width=True,
                   on_click=ui.Call("__panel__logicgate_overview")),
         ui.Divider(),
         _settings_button(),
