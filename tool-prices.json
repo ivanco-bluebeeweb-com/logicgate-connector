@@ -1,0 +1,13 @@
+{
+  "audit_risk_posture": 40,
+  "connect_logicgate": 0,
+  "create_record": 16,
+  "disconnect_logicgate": 0,
+  "get_application": 8,
+  "get_record": 8,
+  "list_applications": 8,
+  "list_connections": 0,
+  "list_fields": 8,
+  "list_records": 8,
+  "update_record": 16
+}
