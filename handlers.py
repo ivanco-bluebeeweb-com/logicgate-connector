@@ -87,7 +87,7 @@ async def connect_logicgate(ctx, params: ConnectLogicGateParams) -> ActionResult
     }
     connections.append(record)
     await _save_connections(ctx, connections)
-    return ActionResult.success(data=_connection_entity(record))
+    return ActionResult.success(data=_connection_entity(record), summary="Logicgate connected.")
 
 
 @chat.function("disconnect_logicgate", "Disconnect a LogicGate account: deletes only the saved credentials. Nothing in LogicGate itself is changed.", action_type="write", chain_callable=True, data_model=DeleteResult, event="logicgate-connector.disconnect_logicgate", effects=["logicgate.provider.disconnected"])
@@ -98,14 +98,14 @@ async def disconnect_logicgate(ctx, params: DisconnectLogicGateParams) -> Action
     if len(remaining) == len(connections):
         return ActionResult.error(f"No connection found with id '{params.connection_id}'.")
     await _save_connections(ctx, remaining)
-    return ActionResult.success(data=DeleteResult(deleted=True, connection_id=params.connection_id))
+    return ActionResult.success(data=DeleteResult(deleted=True, connection_id=params.connection_id), summary="Logicgate disconnected.")
 
 
 @chat.function("list_connections", "List the connected LogicGate accounts.", action_type="read", chain_callable=True, data_model=ConnectionList, event="logicgate-connector.list_connections")
 async def list_connections(ctx, params: NoParams) -> ActionResult:
     """List the connected LogicGate accounts."""
     connections = await _load_connections(ctx)
-    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]))
+    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]), summary="Connections listed.")
 
 
 # ---- Applications ----
@@ -128,7 +128,7 @@ async def list_applications(ctx, params: ListApplicationsParams) -> ActionResult
     except lg.LogicGateError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = _unwrap(data)
-    return ActionResult.success(data=ApplicationList(applications=[_application_entity(a) for a in items]))
+    return ActionResult.success(data=ApplicationList(applications=[_application_entity(a) for a in items]), summary="Applications listed.")
 
 
 @chat.function("get_application", "Read one Application in full by id.", action_type="read", chain_callable=True, data_model=LogicGateApplication, event="logicgate-connector.get_application")
@@ -140,7 +140,7 @@ async def get_application(ctx, params: ApplicationIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/applications/{params.application_id}")
     except lg.LogicGateError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_application_entity(data or {}))
+    return ActionResult.success(data=_application_entity(data or {}), summary="Application retrieved.")
 
 
 # ---- Fields ----
@@ -163,7 +163,7 @@ async def list_fields(ctx, params: ListFieldsParams) -> ActionResult:
     except lg.LogicGateError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = _unwrap(data)
-    return ActionResult.success(data=FieldList(fields=[_field_entity(f) for f in items]))
+    return ActionResult.success(data=FieldList(fields=[_field_entity(f) for f in items]), summary="Fields listed.")
 
 
 # ---- Records ----
@@ -189,7 +189,7 @@ async def list_records(ctx, params: ListRecordsParams) -> ActionResult:
     except lg.LogicGateError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
     items = _unwrap(data)
-    return ActionResult.success(data=RecordList(records=[_record_entity(params.application_id, r) for r in items]))
+    return ActionResult.success(data=RecordList(records=[_record_entity(params.application_id, r) for r in items]), summary="Records listed.")
 
 
 @chat.function("get_record", "Read one Record in full, including all of its field values.", action_type="read", chain_callable=True, data_model=LogicGateRecord, event="logicgate-connector.get_record")
@@ -201,7 +201,7 @@ async def get_record(ctx, params: RecordIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/applications/{params.application_id}/records/{params.record_id}")
     except lg.LogicGateError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_record_entity(params.application_id, data or {}))
+    return ActionResult.success(data=_record_entity(params.application_id, data or {}), summary="Record retrieved.")
 
 
 @chat.function("create_record", "Create a new Record inside an Application, using exact field name/id keys from list_fields.", action_type="write", chain_callable=True, data_model=LogicGateRecord, event="logicgate-connector.create_record", effects=["logicgate.record.created"])
@@ -216,7 +216,7 @@ async def create_record(ctx, params: CreateRecordParams) -> ActionResult:
         )
     except lg.LogicGateError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_record_entity(params.application_id, data or {}))
+    return ActionResult.success(data=_record_entity(params.application_id, data or {}), summary="Record created.")
 
 
 @chat.function("update_record", "Update selected field values of an existing Record. Only given fields change.", action_type="write", chain_callable=True, data_model=LogicGateRecord, event="logicgate-connector.update_record", effects=["logicgate.record.updated"])
@@ -231,7 +231,7 @@ async def update_record(ctx, params: UpdateRecordParams) -> ActionResult:
         )
     except lg.LogicGateError as exc:
         return ActionResult.error(str(exc), retryable=exc.retryable)
-    return ActionResult.success(data=_record_entity(params.application_id, data or {}))
+    return ActionResult.success(data=_record_entity(params.application_id, data or {}), summary="Record updated.")
 
 
 # ---- Aggregated audit ----
@@ -262,4 +262,4 @@ async def audit_risk_posture(ctx, params: AuditRiskPostureParams) -> ActionResul
         application_count=len(apps),
         records_sampled=records_sampled,
         applications_summary="; ".join(summary_parts) if summary_parts else "No applications configured.",
-    ))
+    ), summary="Risk posture audit ready.")
