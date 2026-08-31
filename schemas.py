@@ -62,36 +62,50 @@ class AuditRiskPostureParams(ConnectionRefParams):
 # ---- SDL entities ----
 
 class LogicGateConnection(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connection_id: str
     label: str
     base_url: str
 
 
 class ConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connections: list[LogicGateConnection]
 
 
 class LogicGateApplication(sdl.Entity):
+    id: str = ""
+    title: str = ""
     application_id: str
     name: str
     description: str = ""
 
 
 class ApplicationList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     applications: list[LogicGateApplication]
 
 
 class LogicGateField(sdl.Entity):
+    id: str = ""
+    title: str = ""
     field_id: str
     name: str
     field_type: str = ""
 
 
 class FieldList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     fields: list[LogicGateField]
 
 
 class LogicGateRecord(sdl.Entity):
+    id: str = ""
+    title: str = ""
     record_id: str
     application_id: str
     name: str = ""
@@ -100,15 +114,21 @@ class LogicGateRecord(sdl.Entity):
 
 
 class RecordList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     records: list[LogicGateRecord]
 
 
 class RiskPostureAudit(sdl.Entity):
+    id: str = ""
+    title: str = ""
     application_count: int
     records_sampled: int
     applications_summary: str
 
 
 class DeleteResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     deleted: bool
     connection_id: str
