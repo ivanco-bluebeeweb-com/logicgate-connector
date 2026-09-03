@@ -23,8 +23,7 @@ def _field(label: str, node: ui.UINode) -> ui.UINode:
 
 def _settings_button() -> ui.UINode:
     return ui.Button(
-        "App settings", variant="secondary", size="sm", full_width=True,
-        icon="Settings", on_click=ui.Call("__panel__logicgate_settings"),
+        "App settings", variant="secondary", size="sm", icon="Settings", on_click=ui.Call("__panel__logicgate_settings"),
     )
 
 
@@ -35,6 +34,9 @@ async def logicgate_sidebar(ctx, **kwargs) -> ui.UINode:
         return ui.Stack(direction="v", gap=3, align="stretch", children=[
             ui.Button("How do I get this?", variant="ghost", size="sm", icon="HelpCircle",
                       on_click=ui.Call("__panel__logicgate_connect_help")),
+            ui.Button("Sign in with LogicGate (SSO / OAuth)", variant="primary", size="sm", icon="login"),
+            ui.Divider(),
+            ui.Text("Or connect via API Token", variant="caption"),
             ui.Form(action="connect_logicgate", submit_label="Connect", children=[
                 _field("Account label", ui.Input(param_name="label", placeholder="Acme Corp — Production")),
                 _field("API Token", ui.Input(param_name="api_token", placeholder="LogicGate Admin > API Tokens")),
@@ -45,10 +47,8 @@ async def logicgate_sidebar(ctx, **kwargs) -> ui.UINode:
     return ui.Stack(direction="v", gap=3, align="stretch", children=[
         ui.Text(label, variant="body"),
         ui.Divider(),
-        ui.Button("Applications", variant="ghost", full_width=True,
-                  on_click=ui.Call("__panel__logicgate_applications")),
-        ui.Button("Risk posture overview", variant="ghost", full_width=True,
-                  on_click=ui.Call("__panel__logicgate_overview")),
+        ui.Button("Applications", variant="ghost", on_click=ui.Call("__panel__logicgate_applications")),
+        ui.Button("Risk posture overview", variant="ghost", on_click=ui.Call("__panel__logicgate_overview")),
         ui.Divider(),
         _settings_button(),
     ])
