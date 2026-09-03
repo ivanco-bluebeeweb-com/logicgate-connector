@@ -1881,5 +1881,29 @@
       "refresh": "manual",
       "center_overlay": true
     }
-  ]
+  ],
+  "pricing": {
+    "model": "per_action",
+    "currency": "credits",
+    "monthly_price": 0,
+    "free_tools": [
+      "connect_logicgate",
+      "disconnect_logicgate",
+      "list_connections"
+    ],
+    "tool_prices": {
+      "connect_logicgate": 0,
+      "disconnect_logicgate": 0,
+      "list_connections": 0,
+      "list_applications": 8,
+      "get_application": 8,
+      "list_fields": 8,
+      "list_records": 8,
+      "get_record": 8,
+      "create_record": 16,
+      "update_record": 16,
+      "audit_risk_posture": 20
+    },
+    "notes": "Standard platform scale {0, 8, 16, 20, 40}. 0 = access setup and harmless discovery. 8 = read/list/search. 16 = standard single mutation/CRUD. 20 = bulk or heavy audit operation."
+  }
 }
